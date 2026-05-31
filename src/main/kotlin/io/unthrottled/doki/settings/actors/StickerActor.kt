@@ -26,17 +26,6 @@ object StickerActor {
     }
   }
 
-  fun ignoreScaling(ignoreScaling: Boolean) {
-    if (ThemeConfig.instance.ignoreScaling != ignoreScaling) {
-      ApplicationManager.getApplication().executeOnPooledThread {
-        ThemeConfig.instance.ignoreScaling = ignoreScaling
-        ThemeManager.instance.currentTheme.ifPresent {
-          StickerPaneService.instance.setIgnoreScaling(ignoreScaling)
-        }
-      }
-    }
-  }
-
   fun enableStickers(
     enabled: Boolean,
     withAnimation: Boolean = true,

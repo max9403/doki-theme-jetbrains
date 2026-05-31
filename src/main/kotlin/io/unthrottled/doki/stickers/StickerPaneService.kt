@@ -97,10 +97,6 @@ class StickerPaneService {
     stickers.forEach { it.setPositionable(shouldPosition) }
   }
 
-  fun setIgnoreScaling(ignoreScaling: Boolean) {
-    stickers.forEach { it.ignoreScaling = ignoreScaling }
-  }
-
   private fun disposePane(window: Any) {
     windowsToAddStickersTo[window].toOptional()
       .ifPresent {

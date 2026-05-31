@@ -74,20 +74,6 @@ internal class StickerPane(
 ) : HwFacadeJPanel(), Disposable, Logging {
   private lateinit var stickerContent: JPanel
 
-  var ignoreScaling = ThemeConfig.instance.ignoreScaling
-    set(value) {
-      field = value
-      if (value) {
-        this.size = getScaledDimension()
-      } else if (this::stickerContent.isInitialized) {
-        this.size = stickerContent.size
-      }
-      positionStickerPanel(
-        this.size.width,
-        this.size.height,
-      )
-    }
-
   internal var hideConfig: StickerHideConfig =
     StickerHideConfig(ThemeConfig.instance.hideOnHover, ThemeConfig.instance.hideDelayMS)
 
@@ -400,7 +386,7 @@ internal class StickerPane(
             val t: AffineTransform = g.transform
             currentScaleX = t.scaleX
             currentScaleY = t.scaleY
-            if (g.transform.scaleX.compareTo(1.0) > 0 && ignoreScaling) {
+            if (g.transform.scaleX.compareTo(1.0) > 0) {
               if (!positioned) {
                 positioned = true
                 val scaledDimension = getScaledDimension()
@@ -455,13 +441,14 @@ internal class StickerPane(
 
   private fun getUsableStickerDimension(stickerUrl: String): Dimension {
     val originalDimension = getImageDimensions(stickerUrl)
+    val sysScale = JBUIScale.sysScale()
     return when {
       type == StickerType.SMOL ->
         DimensionCappingService.getCappingStyle(
           originalDimension,
           Dimension(
-            ThemeConfig.instance.smallMaxStickerWidth,
-            ThemeConfig.instance.smallMaxStickerHeight,
+            (ThemeConfig.instance.smallMaxStickerWidth * sysScale).toInt(),
+            (ThemeConfig.instance.smallMaxStickerHeight * sysScale).toInt(),
           ),
         )
 
@@ -469,8 +456,8 @@ internal class StickerPane(
         DimensionCappingService.getCappingStyle(
           originalDimension,
           Dimension(
-            ThemeConfig.instance.maxStickerWidth,
-            ThemeConfig.instance.maxStickerHeight,
+            (ThemeConfig.instance.maxStickerWidth * sysScale).toInt(),
+            (ThemeConfig.instance.maxStickerHeight * sysScale).toInt(),
           ),
         )
 
