@@ -45,7 +45,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.HyperlinkEvent;
 import java.util.Arrays;
 
-public class ThemeSettingsUI implements SearchableConfigurable, Configurable.NoScroll, DumbAware {
+public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
   private final ThemeSettingsModel themeSettingsModel = ThemeSettings.createThemeSettingsModel();
   private ThemeSettingsModel initialThemeSettingsModel = ThemeSettings.createThemeSettingsModel();
 
