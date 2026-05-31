@@ -11,7 +11,7 @@ import javax.swing.UIManager
 object GlassNotificationService {
   fun makeNotificationSeeThrough() {
     ThemeManager.instance.currentTheme
-      .filter { ThemeConfig.instance.isSeeThroughNotifications }
+      .filter { ThemeConfig.instance.notificationOpacity < 100 }
       .ifPresent {
         val defaults = UIManager.getLookAndFeelDefaults()
         val defaultNotificationBackground = UIUtil.getTreeBackground()

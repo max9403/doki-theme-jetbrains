@@ -1,10 +1,10 @@
 package io.unthrottled.doki.config
 
+import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.xmlb.XmlSerializerUtil.copyBean
 import com.intellij.util.xmlb.XmlSerializerUtil.createCopy
 import io.unthrottled.doki.stickers.CurrentSticker
 import io.unthrottled.doki.stickers.StickerLevel
@@ -15,58 +15,80 @@ import java.util.Locale
   name = "DokiDokiThemeConfig",
   storages = [Storage("doki_doki_theme.xml")],
 )
-class ThemeConfig : PersistentStateComponent<ThemeConfig>, Cloneable {
+class ThemeConfig : BaseState(), PersistentStateComponent<ThemeConfig>, Cloneable {
   companion object {
     val instance: ThemeConfig
       get() = ServiceManager.getService(ThemeConfig::class.java)
   }
 
-  var ignoreScaling: Boolean = false
-  var hideOnHover: Boolean = false
-  var hideDelayMS: Int = 750
-  var savedMargins: String = "{}"
-  var userId: String = ""
-  var isLafAnimation: Boolean = false
-  var isMoveableStickers: Boolean = false
-  var isNotShowReadmeAtStartup: Boolean = false
-  var version: String = "0.0.0"
-  var stickerLevel: String = StickerLevel.ON.name
-  var isFirstTime: Boolean = true
-  var isDokiBackground: Boolean = false
-  var isEmptyFrameBackground: Boolean = true
-  var showThemeStatusBar: Boolean = true
-  var allowPromotions: Boolean = true
-  var currentStickerName: String = CurrentSticker.DEFAULT.name
-
-  var isGlobalFontSize: Boolean = false
-  var customFontSize: Int = 13
-
-  var isOverrideConsoleFont: Boolean = false
-  var consoleFontName: String = "JetBrains Mono"
+  var hideOnHover: Boolean by property(false)
+  var isLafAnimation: Boolean by property(false)
+  var isMoveableStickers: Boolean by property(false)
+  var isNotShowReadmeAtStartup: Boolean by property(false)
+  var isFirstTime: Boolean by property(true)
+  var isDokiBackground: Boolean by property(false)
+  var isEmptyFrameBackground: Boolean by property(true)
+  var showThemeStatusBar: Boolean by property(true)
+  var allowPromotions: Boolean by property(true)
+  var isGlobalFontSize: Boolean by property(false)
+  var isOverrideConsoleFont: Boolean by property(false)
 
   // todo remove this after release has cooked
-  var isMaterialDirectories: Boolean = false
-  var isMaterialFiles: Boolean = false
-  var isMaterialPSIIcons: Boolean = false
+  var isMaterialDirectories: Boolean by property(false)
+  var isMaterialFiles: Boolean by property(false)
+  var isMaterialPSIIcons: Boolean by property(false)
 
-  var capStickerDimensions: Boolean = false
-  var maxStickerWidth: Int = -1
-  var maxStickerHeight: Int = -1
+  var capStickerDimensions: Boolean by property(false)
+  var showSmallStickers: Boolean by property(false)
+  var discreetMode: Boolean by property(false)
 
-  var showSmallStickers: Boolean = false
-  var smallMaxStickerWidth: Int = 100
-  var smallMaxStickerHeight: Int = 100
+  var hideDelayMS: Int by property(750)
+  var customFontSize: Int by property(13)
+  var maxStickerWidth: Int by property(-1)
+  var maxStickerHeight: Int by property(-1)
+  var smallMaxStickerWidth: Int by property(100)
+  var smallMaxStickerHeight: Int by property(100)
+  var notificationOpacity: Int by property(100)
 
-  var isSeeThroughNotifications: Boolean = false
-  var notificationOpacity: Int = 90
+  private val _savedMargins = string("{}")
+  var savedMargins: String
+    get() = _savedMargins.getValue(this) ?: "{}"
+    set(value) { _savedMargins.setValue(this, value) }
 
-  var discreetMode = false
-  var discreetModeConfig = "{}"
+  private val _userId = string("")
+  var userId: String
+    get() = _userId.getValue(this) ?: ""
+    set(value) { _userId.setValue(this, value) }
+
+  private val _version = string("0.0.0")
+  var version: String
+    get() = _version.getValue(this) ?: "0.0.0"
+    set(value) { _version.setValue(this, value) }
+
+  private val _stickerLevel = string(StickerLevel.ON.name)
+  var stickerLevel: String
+    get() = _stickerLevel.getValue(this) ?: StickerLevel.ON.name
+    set(value) { _stickerLevel.setValue(this, value) }
+
+  private val _currentStickerName = string(CurrentSticker.DEFAULT.name)
+  private var currentStickerName: String
+    get() = _currentStickerName.getValue(this) ?: CurrentSticker.DEFAULT.name
+    set(value) { _currentStickerName.setValue(this, value) }
+
+  private val _consoleFontName = string("JetBrains Mono")
+  var consoleFontName: String
+    get() = _consoleFontName.getValue(this) ?: "JetBrains Mono"
+    set(value) { _consoleFontName.setValue(this, value) }
+
+  private val _discreetModeConfig = string("{}")
+  var discreetModeConfig: String
+    get() = _discreetModeConfig.getValue(this) ?: "{}"
+    set(value) { _discreetModeConfig.setValue(this, value) }
 
   override fun getState(): ThemeConfig? = createCopy(this)
 
   override fun loadState(state: ThemeConfig) {
-    copyBean(state, this)
+    copyFrom(state)
   }
 
   var currentSticker: CurrentSticker

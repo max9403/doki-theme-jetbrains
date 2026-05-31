@@ -52,10 +52,8 @@ data class ThemeSettingsModel(
   var smallMaxStickerHeight: Int,
   var smallMaxStickerWidth: Int,
   var consoleFontValue: String,
-  var ignoreScaling: Boolean,
   var hideOnHover: Boolean,
   var hideDelayMS: Int,
-  var isSeeThroughNotifications: Boolean,
   var notificationOpacity: Int,
 ) {
   fun duplicate(): ThemeSettingsModel = copy()
@@ -86,10 +84,9 @@ object ThemeSettings {
       isEmptyFrameBackground = ThemeConfig.instance.isEmptyFrameBackground,
       isCustomSticker = CustomStickerService.isCustomStickers,
       customStickerPath = CustomStickerService.getCustomStickerPath().orElse(""),
-      isCustomFontSize = ThemeConfig.instance.isGlobalFontSize,
-      customFontSizeValue = ThemeConfig.instance.customFontSize,
-      isSeeThroughNotifications = ThemeConfig.instance.isSeeThroughNotifications,
-      notificationOpacity = ThemeConfig.instance.notificationOpacity,
+     isCustomFontSize = ThemeConfig.instance.isGlobalFontSize,
+       customFontSizeValue = ThemeConfig.instance.customFontSize,
+       notificationOpacity = ThemeConfig.instance.notificationOpacity,
       isOverrideConsoleFont = ThemeConfig.instance.isOverrideConsoleFont,
       consoleFontValue = ThemeConfig.instance.consoleFontName,
       maxStickerHeight = ThemeConfig.instance.maxStickerHeight,
@@ -98,7 +95,6 @@ object ThemeSettings {
       smallMaxStickerHeight = ThemeConfig.instance.smallMaxStickerHeight,
       smallMaxStickerWidth = ThemeConfig.instance.smallMaxStickerWidth,
       showSmallStickers = ThemeConfig.instance.showSmallStickers,
-      ignoreScaling = ThemeConfig.instance.ignoreScaling,
       hideOnHover = ThemeConfig.instance.hideOnHover,
       hideDelayMS = ThemeConfig.instance.hideDelayMS,
       allowPromotionalContent = ThemeConfig.instance.allowPromotions,
@@ -109,14 +105,14 @@ object ThemeSettings {
     ShowReadmeActor.dontShowReadmeOnStartup(themeSettingsModel.isNotShowReadmeAtStartup)
     StickerActor.enableStickers(themeSettingsModel.areStickersEnabled, false)
     StickerActor.swapStickers(themeSettingsModel.currentSticker, false)
-    StickerActor.ignoreScaling(themeSettingsModel.ignoreScaling)
     StickerActor.setCustomSticker(
       themeSettingsModel.customStickerPath,
       themeSettingsModel.isCustomSticker,
       false,
     )
+    val capEnabled = themeSettingsModel.maxStickerHeight > 0 || themeSettingsModel.maxStickerWidth > 0
     StickerActor.setDimensionCapping(
-      themeSettingsModel.capStickerDimensions,
+      capEnabled,
       themeSettingsModel.maxStickerWidth,
       themeSettingsModel.maxStickerHeight,
     )
@@ -139,7 +135,6 @@ object ThemeSettings {
       themeSettingsModel.consoleFontValue,
     )
     SeeThroughNotificationsActor.enableSeeThroughNotifications(
-      themeSettingsModel.isSeeThroughNotifications,
       themeSettingsModel.notificationOpacity,
     )
     DiscreetModeActor.enableDiscreetMode(themeSettingsModel.discreetMode)
