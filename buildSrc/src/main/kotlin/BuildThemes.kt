@@ -451,13 +451,13 @@ open class BuildThemes : DefaultTask() {
   }
 
   private fun buildStickerPath(separator: String?, masterThemeDefinition: MasterThemeDefinition) =
-    "${separator}stickers${separator}${masterThemeDefinition.usableGroup.toLowerCase()}${separator}${masterThemeDefinition.usableName}${separator}"
+    "${separator}stickers${separator}${masterThemeDefinition.usableGroup.lowercase()}${separator}${masterThemeDefinition.usableName}${separator}"
 
   private fun getResourceDirectory(masterThemeDefinition: MasterThemeDefinition): Path = get(
     getResourcesDirectory().toString(),
     "doki",
     "themes",
-    masterThemeDefinition.usableGroup.toLowerCase()
+    masterThemeDefinition.usableGroup.lowercase()
   )
 
   private fun getResourcesDirectory(): Path = get(
@@ -544,7 +544,7 @@ open class BuildThemes : DefaultTask() {
       }
     }
     .collect(Collectors.toMap({ it.first }, { it.second }, { _, b -> b },
-      { TreeMap(Comparator.comparing { item -> item.toLowerCase() }) })
+      { TreeMap(Comparator.comparing { item -> item.lowercase() }) })
     )
 
   private fun createEditorScheme(
