@@ -21,6 +21,9 @@ import io.unthrottled.doki.config.ThemeConfig;
 import io.unthrottled.doki.icon.DokiIcons;
 import io.unthrottled.doki.promotions.MessageBundle;
 import io.unthrottled.doki.service.PluginService;
+import io.unthrottled.doki.settings.actors.ThemeActor;
+import io.unthrottled.doki.themes.DokiTheme;
+import io.unthrottled.doki.themes.ThemeManager;
 import io.unthrottled.doki.stickers.CurrentSticker;
 import io.unthrottled.doki.stickers.StickerPaneService;
 import org.jetbrains.annotations.NonNls;
@@ -120,18 +123,17 @@ public class ThemeSettingsUI implements SearchableConfigurable, Configurable.NoS
       }
     });
 
-    if (PluginService.INSTANCE.isRandomizerInstalled()) {
-      randmizerInstallLink.setVisible(false);
-    } else {
-      randmizerInstallLink.setIcon(DokiIcons.Plugins.Randomizer.INSTANCE.getTOOL_WINDOW(), false);
-      randmizerInstallLink.setText(MessageBundle.message("settings.general.randomizer.install"));
-      randmizerInstallLink.addActionListener(e -> {
-        final var settings = Settings.KEY.getData(DataManager.getInstance().getDataContext(randmizerInstallLink));
-        if (settings != null) {
-          settings.select(settings.find("preferences.pluginManager"), "/tag:\"Editor Color Schemes\" Theme Randomizer");
-        }
-      });
-    }
+    randmizerInstallLink.setIcon(DokiIcons.Plugins.Randomizer.INSTANCE.getTOOL_WINDOW(), false);
+    randmizerInstallLink.setText(MessageBundle.message("settings.general.randomizer.install"));
+    randmizerInstallLink.addActionListener(e -> {
+      java.util.List<DokiTheme> themes = ThemeManager.Companion.getInstance().getAllThemes();
+      if (themes.isEmpty()) return;
+      int index = java.util.concurrent.ThreadLocalRandom.current().nextInt(themes.size());
+      DokiTheme randomTheme = themes.get(index);
+      ThemeActor.INSTANCE.applyTheme(randomTheme.getName());
+      themeSettingsModel.setCurrentTheme(randomTheme.getName());
+      currentThemeWomboComboBox.setSelectedItem(randomTheme.getName());
+    });
 
     if (PluginService.INSTANCE.areIconsInstalled()) {
       iconLink.setVisible(false);
