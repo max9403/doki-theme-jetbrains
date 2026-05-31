@@ -5,15 +5,12 @@ import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.options.ex.Settings;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.NlsContexts;
-import com.intellij.ui.ColorUtil;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.ActionLink;
 import com.intellij.util.ui.FontInfo;
 import com.intellij.util.ui.UIUtil;
@@ -40,9 +37,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.HyperlinkEvent;
 import java.util.Arrays;
 
 public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
@@ -62,7 +57,9 @@ public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
   private JCheckBox nameInStatusBarCheckBox;
   private JButton chooseImageButton;
   private JCheckBox useCustomStickerCheckBox;
-  private JTextPane generalLinks;
+  private ActionLink documentationLink;
+  private ActionLink changelogLink;
+  private ActionLink reportIssueLink;
   private JSlider notificationOpacitySlider;
   private JCheckBox makeNotificationsTransparentCheckBox;
   private JCheckBox themeChangeAnimationCheckBox;
@@ -80,7 +77,7 @@ public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
   private JButton resetStickerMarginsButton;
   private JLabel marginHelp;
   private JCheckBox ignoreScalingCheckBox;
-  private com.intellij.ui.components.ActionLink randmizerInstallLink;
+  private com.intellij.ui.components.ActionLink randomThemeLink;
   private JSpinner hideDelayMsSpinner;
   private JCheckBox hideOnHoverCheck;
   private JCheckBox allowPromotionalContentCheckBox;
@@ -108,6 +105,18 @@ public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
     warningLabel.setIcon(AllIcons.General.Warning);
     marginHelp.setIcon(AllIcons.Actions.Help);
 
+    documentationLink.setIcon(AllIcons.Actions.Help, false);
+    documentationLink.setText(MessageBundle.message("settings.general.documentation"));
+    documentationLink.addActionListener(e -> BrowserUtil.browse("https://github.com/doki-theme/doki-theme-jetbrains#documentation"));
+
+    changelogLink.setIcon(AllIcons.Actions.Refresh, false);
+    changelogLink.setText(MessageBundle.message("settings.general.changelog"));
+    changelogLink.addActionListener(e -> BrowserUtil.browse("https://github.com/doki-theme/doki-theme-jetbrains/blob/main/changelog/CHANGELOG.md"));
+
+    reportIssueLink.setIcon(AllIcons.General.BalloonError, false);
+    reportIssueLink.setText(MessageBundle.message("settings.general.report.issue"));
+    reportIssueLink.addActionListener(e -> BrowserUtil.browse("https://github.com/doki-theme/doki-theme-jetbrains/issues"));
+
     chooseImageButton.addActionListener(e -> {
       CustomStickerChooser dialog = new CustomStickerChooser(
         Arrays.stream(ProjectManager.getInstance().getOpenProjects()).findFirst().orElse(
@@ -123,9 +132,9 @@ public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
       }
     });
 
-    randmizerInstallLink.setIcon(DokiIcons.Plugins.Randomizer.INSTANCE.getTOOL_WINDOW(), false);
-    randmizerInstallLink.setText(MessageBundle.message("settings.general.randomizer.install"));
-    randmizerInstallLink.addActionListener(e -> {
+    randomThemeLink.setIcon(AllIcons.Actions.Refresh, false);
+    randomThemeLink.setText(MessageBundle.message("settings.general.random.theme"));
+    randomThemeLink.addActionListener(e -> {
       java.util.List<DokiTheme> themes = ThemeManager.Companion.getInstance().getAllThemes();
       if (themes.isEmpty()) return;
       int index = java.util.concurrent.ThreadLocalRandom.current().nextInt(themes.size());
@@ -395,47 +404,6 @@ public class ThemeSettingsUI implements SearchableConfigurable, DumbAware {
   }
 
   private void createUIComponents() {
-    generalLinks = new JTextPane();
-    String accentHex = ColorUtil.toHex(
-      JBColor.namedColor("Link.activeForeground", JBColor.namedColor("link.foreground", 0x589DF6))
-    );
-    generalLinks.setEditable(false);
-    generalLinks.setContentType("text/html");
-    generalLinks.setBackground(UIUtil.getPanelBackground());
-    generalLinks.setText(
-      "<html>\n" +
-        "<head>\n" +
-        "    <style type='text/css'>\n" +
-        "        body {\n" +
-        "            font-family: \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n" +
-        "        }\n" +
-        "\n" +
-        "        a {\n" +
-        "            color: #" + accentHex + ";\n" +
-        "            font-weight: bold;\n" +
-        "        }\n" +
-        "\n" +
-        "        p {\n" +
-        "            color: #" + ColorUtil.toHex(UIUtil.getLabelForeground()) + ";\n" +
-        "        }\n" +
-        "        .meme {\n" +
-        "            margin-top: 5;\n" +
-        "            text-align: center;\n" +
-        "        }\n" +
-        "    </style>\n" +
-        "</head>\n" +
-        "<a href='https://github.com/doki-theme/doki-theme-jetbrains#documentation'>View Documentation</a><br/><br/>\n" +
-        "<a href='https://github.com/doki-theme/doki-theme-jetbrains/blob/main/changelog/CHANGELOG.md'>See Changelog</a><br/><br/>\n" +
-        "<a href='https://github.com/doki-theme/doki-theme-jetbrains/issues'>Report Issue</a><br/><br/>\n" +
-        "</div>\n" +
-        "</html>"
-    );
-    generalLinks.addHyperlinkListener(h -> {
-      if (HyperlinkEvent.EventType.ACTIVATED.equals(h.getEventType())) {
-        BrowserUtil.browse(h.getURL());
-      }
-    });
-
     currentThemeWomboComboBox = ThemeSettings.INSTANCE.createThemeComboBoxModel(
       () -> this.themeSettingsModel == null ?
         ThemeSettings.createThemeSettingsModel() :
