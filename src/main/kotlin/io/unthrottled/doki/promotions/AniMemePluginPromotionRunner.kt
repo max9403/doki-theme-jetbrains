@@ -1,15 +1,13 @@
 package io.unthrottled.doki.promotions
 
-import com.intellij.ide.IdeEventQueue
+import com.intellij.ide.IdleTracker
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.util.concurrency.EdtScheduledExecutorService
 import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.doOrElse
 import io.unthrottled.doki.util.toOptional
 import java.util.Optional
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 enum class PromotionStatus {
@@ -37,20 +35,12 @@ class AniMemePluginPromotionRunner(
   private val onReject: () -> Unit,
 ) : Runnable {
   init {
-    IdeEventQueue.getInstance().addIdleListener(
-      this,
-      TimeUnit.MILLISECONDS.convert(
-        5,
-        TimeUnit.MINUTES,
-      ).toInt() +
-        Random(System.currentTimeMillis())
-          .nextInt(0, 2000),
-    )
+    val timeoutMs = 5 * 60 * 1000 + Random(System.currentTimeMillis()).nextInt(0, 2000)
+    IdleTracker.getInstance().addIdleListener(timeoutMs, this)
   }
 
   override fun run() {
     AniMemePluginPromotion.runPromotion(onPromotion, onReject)
-    IdeEventQueue.getInstance().removeIdleListener(this)
   }
 }
 
@@ -62,25 +52,19 @@ object AniMemePluginPromotion {
     ApplicationManager.getApplication().executeOnPooledThread {
       ThemeManager.instance.currentTheme.ifPresent { dokiTheme ->
         val promotionAssets = PromotionAssets(dokiTheme)
-        EdtScheduledExecutorService.getInstance().schedule(
-          {
-            getFirstProject()
-              .doOrElse(
-                { project ->
-                  ApplicationManager.getApplication().invokeLater {
-                    AniMemePromotionDialog(
-                      promotionAssets,
-                      project,
-                      onPromotion,
-                    ).show()
-                  }
-                },
-                onReject,
-              )
-          },
-          0,
-          TimeUnit.SECONDS,
-        )
+        getFirstProject()
+          .doOrElse(
+            { project ->
+              ApplicationManager.getApplication().invokeLater {
+                AniMemePromotionDialog(
+                  promotionAssets,
+                  project,
+                  onPromotion,
+                ).show()
+              }
+            },
+            onReject,
+          )
       }
     }
   }

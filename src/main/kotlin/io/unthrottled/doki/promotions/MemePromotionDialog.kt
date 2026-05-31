@@ -1,9 +1,9 @@
 package io.unthrottled.doki.promotions
 
 import com.intellij.notification.Notification
+import com.intellij.ide.BrowserUtil
 import com.intellij.notification.NotificationAction
 import com.intellij.notification.NotificationGroupManager
-import com.intellij.notification.NotificationListener
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.extensions.PluginId
@@ -131,7 +131,11 @@ class AniMemePromotionDialog(
         .setIcon(DokiIcons.General.PLUGIN_LOGO)
         .addAction(installAction)
         .addAction(neverShowAction)
-        .setListener(NotificationListener.UrlOpeningListener(false))
+        .addAction(
+          NotificationAction.createSimpleExpiring("View in Marketplace") {
+            BrowserUtil.browse("https://plugins.jetbrains.com/plugin/15865-amii")
+          },
+        )
 
     updateNotification.whenExpired {
       emitStatus(PromotionStatus.BLOCKED)

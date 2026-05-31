@@ -7,7 +7,6 @@ import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.Logging
 import io.unthrottled.doki.util.logger
 import io.unthrottled.doki.util.runSafely
-import io.unthrottled.doki.util.toOptional
 import java.util.Optional
 
 object ThemeActor : Logging {
@@ -33,27 +32,25 @@ object ThemeActor : Logging {
           it.name != selectedTheme
         }.map { "Not Same" }
     } else {
-      "Not Doki Theme".toOptional()
+      Optional.of("Not Doki Theme")
     }
   }
 
   fun setDokiTheme(possibleDokiTheme: Optional<DokiTheme>) {
-    possibleDokiTheme
-      .flatMap { dokiTheme ->
-        LafManager.getInstance().installedLookAndFeels
-          .firstOrNull { dokiTheme.name == it.name }
-          .toOptional()
+    possibleDokiTheme.ifPresent { dokiTheme ->
+      val laf = LafManager.getInstance().getInstalledThemes()
+        .find { it.name == dokiTheme.name }
+        ?: return@ifPresent
+
+      runSafely({
+        QuickChangeLookAndFeel.switchLafAndUpdateUI(
+          LafManager.getInstance(),
+          laf,
+          true,
+        )
+      }) {
+        logger().warn("Unable to set doki theme for reasons", it)
       }
-      .ifPresent {
-        runSafely({
-          QuickChangeLookAndFeel.switchLafAndUpdateUI(
-            LafManager.getInstance(),
-            it,
-            true,
-          )
-        }) {
-          logger().warn("Unable to set doki theme for reasons", it)
-        }
-      }
+    }
   }
 }

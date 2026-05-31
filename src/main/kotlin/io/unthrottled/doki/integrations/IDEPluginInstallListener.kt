@@ -1,13 +1,14 @@
 package io.unthrottled.doki.integrations
 
 import com.intellij.ide.plugins.DynamicPluginListener
+import com.intellij.ide.plugins.DynamicPluginVetoer
 import com.intellij.ide.plugins.IdeaPluginDescriptor
 import io.unthrottled.doki.icon.IconPathReplacementComponent
 import io.unthrottled.doki.laf.LookAndFeelInstaller
 import io.unthrottled.doki.service.DOKI_ICONS_PLUGIN_ID
 import io.unthrottled.doki.util.Logging
 
-class IDEPluginInstallListener : DynamicPluginListener, Logging {
+class IDEPluginInstallListener : DynamicPluginListener, DynamicPluginVetoer, Logging {
   override fun beforePluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
   }
 
@@ -17,8 +18,7 @@ class IDEPluginInstallListener : DynamicPluginListener, Logging {
   ) {
   }
 
-  override fun checkUnloadPlugin(pluginDescriptor: IdeaPluginDescriptor) {
-  }
+  override fun vetoPluginUnload(pluginDescriptor: IdeaPluginDescriptor): String? = null
 
   override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
     if (isDokiIconPlugin(pluginDescriptor)) {

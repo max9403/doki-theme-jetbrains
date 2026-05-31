@@ -138,7 +138,7 @@ object ColorPatcher : SvgElementColorPatcherProvider {
       .build()
 
   override fun attributeForPath(path: String): SvgAttributePatcher? {
-    val safeKey = path ?: "ayyLmao"
+    val safeKey = path
     return if (patcherProviderCache.add(safeKey)) {
       val hackedPatcher =
         buildHackedPatcher(

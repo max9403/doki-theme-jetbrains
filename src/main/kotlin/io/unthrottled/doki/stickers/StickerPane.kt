@@ -368,7 +368,7 @@ internal class StickerPane(
     stickerContent.layout = null
     val stickerDimension = getUsableStickerDimension(stickerUrl)
 
-    val originalImage = ImageIcon(URL(stickerUrl)).image
+    val originalImage = ImageIcon(java.net.URI(stickerUrl).toURL()).image
     val lessGarbageImage =
       originalImage.getScaledInstance(
         stickerDimension.width,

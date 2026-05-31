@@ -1,8 +1,8 @@
 package io.unthrottled.doki.config
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.XmlSerializerUtil.createCopy
@@ -18,7 +18,7 @@ import java.util.Locale
 class ThemeConfig : BaseState(), PersistentStateComponent<ThemeConfig>, Cloneable {
   companion object {
     val instance: ThemeConfig
-      get() = ServiceManager.getService(ThemeConfig::class.java)
+      get() = ApplicationManager.getApplication().getService(ThemeConfig::class.java)
   }
 
   var hideOnHover: Boolean by property(false)
