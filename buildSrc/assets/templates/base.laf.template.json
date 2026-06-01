@@ -16,14 +16,48 @@
     },
 
     "TitlePane.background": "baseBackground",
-    "Panel.background": "baseBackground",
-    "ToolWindow.background": "baseBackground",
+    "Panel.background": "headerColor",
+    "Islands": 1,
+    "ToolWindow": {
+      "background": "headerColor",
+      "borderColor": "borderColor",
+      "Stripe": {
+        "background": "headerColor",
+        "borderColor": "borderColor"
+      },
+      "Button": {
+        "selectedBackground": "highlightColor",
+        "selectedForeground": "selectionForeground",
+        "hoverBackground": "selectionInactive"
+      },
+      "Header": {
+        "background": "headerColor",
+        "inactiveBackground": "baseBackground",
+        "borderColor": "borderColor"
+      },
+      "HeaderTab": {
+        "background": "headerColor",
+        "hoverBackground": "highlightColor",
+        "selectedBackground": "highlightColor",
+        "inactiveUnderlineColor": "accentColor",
+        "underlineColor": "accentColor"
+      },
+      "Bottom": {
+        "background": "headerColor",
+        "foreground": "foregroundColor",
+        "borderColor": "borderColor"
+      }
+    },
     "Button.background": "baseBackground",
     "Label.background": "baseBackground",
     "CheckBox.background": "baseBackground",
     "EditorTabs.background": "baseBackground",
-    "ToolWindow.Header.inactiveBackground": "baseBackground",
-    "OptionPane.background": "baseBackground",
+    "OptionPane.background": "headerColor",
+    "OptionPane.messageAreaBorder": "borderColor",
+    "Dialog.background": "headerColor",
+    "activeCaption": "highlightColor",
+    "inactiveCaption": "baseBackground",
+    "WindowsDialogHeader.background": "headerColor",
     "Slider.background": "baseBackground",
     "RadioButton.background": "baseBackground",
     "DefaultTabs.background": "baseBackground",
@@ -38,6 +72,7 @@
     "WelcomeScreen.List.background": "baseBackground",
     "WelcomeScreen.Details.background": "baseBackground",
     "window": "baseBackground",
+    "windowText": "foregroundColor",
     "StatusBar.background": "baseBackground",
     "SearchMatch.foreground": "baseBackground",
     "Popup.background": "baseBackground",
@@ -76,7 +111,6 @@
     "UIDesigner.Panel.background": "headerColor",
     "Menu.background": "headerColor",
     "NewClass.Panel.background": "headerColor",
-    "ToolWindow.Header.background": "headerColor",
     "List.background": "headerColor",
     "Tree.background": "headerColor",
     "EditorPane.inactiveBackground": "headerColor",
@@ -87,7 +121,7 @@
     "ParameterInfo.background": "headerColor",
     "ParameterInfo.currentOverloadBackground": "headerColor",
     "Popup.Header.inactiveBackground": "headerColor",
-    "Popup.Header.activeBackground":"headerColor",
+    "Popup.Header.activeBackground": "headerColor",
     "Notification.background": "headerColor",
     "Notification.MoreButton.innerBorderColor": "headerColor",
     "TableHeader.background": "headerColor",
@@ -205,8 +239,6 @@
     "ActionButton.hoverSeparatorColor": "highlightColor",
     "StatusBar.hoverBackground": "highlightColor",
     "Table.stripeColor": "highlightColor",
-    "ToolWindow.Button.selectedBackground": "highlightColor",
-    "ToolWindow.HeaderTab.hoverBackground": "highlightColor",
     "DefaultTabs.hoverBackground": "highlightColor",
     "Plugins.tagBackground": "highlightColor",
     "Notification.MoreButton.background": "highlightColor",
@@ -250,6 +282,7 @@
     "Plugins.SearchField.borderColor": "borderColor",
     "Popup.Advertiser.borderColor": "borderColor",
     "Popup.borderColor": "borderColor",
+    "Popup.Border.color": "borderColor",
     "Popup.inactiveBorderColor": "borderColor",
     "Popup.innerBorderColor": "borderColor",
     "Popup.separatorColor": "borderColor",
@@ -262,14 +295,13 @@
     "TableHeader.separatorColor": "borderColor",
     "TableHeader.bottomSeparatorColor": "borderColor",
     "ToolBar.borderHandleColor": "borderColor",
-    "ToolWindow.Header.borderColor": "borderColor",
     "ValidationTooltip.errorBorderColor": "borderColor",
     "ValidationTooltip.warningBorderColor": "borderColor",
     "WelcomeScreen.borderColor": "borderColor",
     "WelcomeScreen.groupIconBorderColor": "borderColor",
     "WelcomeScreen.separatorColor": "borderColor",
-    "windowBorder":"borderColor",
-    "Outline.color":"borderColor",
+    "windowBorder": "borderColor",
+    "Outline.color": "borderColor",
     "DefaultTabs.borderColor": "borderColor",
 
     "TextField.disabledBackground": "nonProjectFileScopeColor",
@@ -569,8 +601,6 @@
     "TextField.caretForeground":"accentColor",
     "InplaceRefactoringPopup.borderColor": "accentColor",
     "TextPane.caretForeground":"accentColor",
-    "ToolWindow.HeaderTab.inactiveUnderlineColor": "accentColor",
-    "ToolWindow.HeaderTab.underlineColor":"accentColor",
     "Tree.modifiedItemForeground": "accentColor",
     "VersionControl.GitLog.localBranchIconColor":"accentColor",
     "VersionControl.HgLog.branchIconColor": "accentColor",
@@ -664,7 +694,51 @@
     "Editor.shortcutForeground": "infoForeground",
     "Debugger.Variables.collectingDataForeground": "infoForeground",
 
-    "Button.paintShadow": false
+    "Button.paintShadow": false,
+
+    "ProjectView.background": "headerColor",
+    "ProjectView.foreground": "foregroundColor",
+    "ProjectView.selectedBackground": "highlightColor",
+    "ProjectView.selectedForeground": "selectionForeground",
+    "ProjectView.hoverBackground": "selectionInactive",
+
+
+    "Terminal.background": "textEditorBackground",
+    "Terminal.foreground": "foregroundColor",
+    "Terminal.borderColor": "borderColor",
+
+    "Console.background": "textEditorBackground",
+    "Console.foreground": "foregroundColor",
+    "ExecutionConsole.background": "textEditorBackground",
+    "ExecutionConsole.foreground": "foregroundColor",
+
+    "RunContent.background": "headerColor",
+    "RunContent.foreground": "foregroundColor",
+    "DebugContent.background": "headerColor",
+    "DebugContent.foreground": "foregroundColor",
+
+    "Find.background": "headerColor",
+    "Find.foreground": "foregroundColor",
+    "Find.selectedBackground": "highlightColor",
+
+    "Structure.background": "headerColor",
+    "Structure.foreground": "foregroundColor",
+
+    "Chrome.background": "baseBackground",
+    "Chrome.foreground": "foregroundColor",
+    "Splitter.background": "borderColor",
+    "Splitter.borderColor": "borderColor",
+
+    "Component.background": "headerColor",
+    "Island": {
+      "background": "headerColor",
+      "borderColor": "borderColor"
+    },
+    "MainWindow.background": "baseBackground",
+
+    "StatusBar.Breadcrumbs.hoverBackground": "selectionInactive",
+    "StatusBar.Breadcrumbs.selectionBackground": "highlightColor",
+    "StatusBar.Breadcrumbs.floatingBackground": "headerColor"
   },
   "icons": {
     "ColorPalette": {
