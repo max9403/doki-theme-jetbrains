@@ -1,4 +1,4 @@
-<idea-plugin require-restart="true">
+<idea-plugin>
   <id>
     io.acari.DDLCTheme  </id>
   <name>

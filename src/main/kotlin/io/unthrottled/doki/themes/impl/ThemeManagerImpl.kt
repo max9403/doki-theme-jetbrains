@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.intellij.ide.ui.LafManager
 import com.intellij.ide.ui.laf.UIThemeLookAndFeelInfo
 import com.intellij.ide.ui.laf.UIThemeLookAndFeelInfoImpl
+import com.intellij.openapi.application.ApplicationManager
 import io.unthrottled.doki.TheDokiTheme
 import io.unthrottled.doki.themes.DokiTheme
 import io.unthrottled.doki.themes.JetBrainsThemeDefinition
@@ -20,9 +21,14 @@ import java.util.stream.Collectors
 import kotlin.io.path.inputStream
 
 class ThemeManagerImpl : ThemeManager {
-  private val themeMap: Map<String, DokiTheme>
+  @Volatile
+  private var themeMap: Map<String, DokiTheme>
 
   init {
+    themeMap = buildThemeMap()
+  }
+
+  private fun buildThemeMap(): Map<String, DokiTheme> {
     val gson = Gson()
     val themeURI =
       javaClass.classLoader
@@ -32,28 +38,27 @@ class ThemeManagerImpl : ThemeManager {
         .split("!")
     val currentVersion = TheDokiTheme.getVersion().orElse("69")
     val fileSystem = newFileSystem(create(themeURI[0]), mapOf<String, String>())
-    themeMap =
-      walk(
-        fileSystem.getPath(
-          themeURI[1],
+    return walk(
+      fileSystem.getPath(
+        themeURI[1],
+      ),
+    )
+      .filter { it.fileName.toString().endsWith(".theme.meta.json") }
+      .map { it.inputStream(StandardOpenOption.READ) }
+      .map {
+        gson.fromJson(
+          InputStreamReader(it, StandardCharsets.UTF_8),
+          JetBrainsThemeDefinition::class.java,
+        )
+      }
+      .map { DokiTheme(it, currentVersion) }
+      .collect(
+        Collectors.toMap(
+          { it.name },
+          { it },
+          { a, _ -> a },
         ),
       )
-        .filter { it.fileName.toString().endsWith(".theme.meta.json") }
-        .map { it.inputStream(StandardOpenOption.READ) }
-        .map {
-          gson.fromJson(
-            InputStreamReader(it, StandardCharsets.UTF_8),
-            JetBrainsThemeDefinition::class.java,
-          )
-        }
-        .map { DokiTheme(it, currentVersion) }
-        .collect(
-          Collectors.toMap(
-            { it.name },
-            { it },
-            { a, _ -> a },
-          ),
-        )
   }
 
   override val isCurrentThemeDoki: Boolean
@@ -78,6 +83,14 @@ class ThemeManagerImpl : ThemeManager {
   }
 
   override fun themeByName(selectedTheme: String): Optional<DokiTheme> = themeMap[selectedTheme].toOptional()
+
+  companion object {
+    @JvmStatic
+    fun refreshThemes() {
+      val instance = ApplicationManager.getApplication().getService(ThemeManagerImpl::class.java)
+      instance.themeMap = instance.buildThemeMap()
+    }
+  }
 
   override fun dispose() {
   }
