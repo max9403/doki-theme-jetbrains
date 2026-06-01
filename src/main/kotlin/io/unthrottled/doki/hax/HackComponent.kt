@@ -28,7 +28,7 @@ object HackComponent : Disposable {
     runSafely({
       val cp = ClassPool(true)
       cp.insertClassPath(ClassClassPath(Class.forName("com.intellij.codeInsight.actions.DirectoryFormattingOptions")))
-      val ctClass = cp.get("com.intellij.codeInsight.actions.FileInEditorProcessor\$FormattedMessageBuilder")
+      val ctClass = cp.get($$"com.intellij.codeInsight.actions.FileInEditorProcessor$FormattedMessageBuilder")
       val init = ctClass.getDeclaredMethod("getMessage")
       init.instrument(
         object : ExprEditor() {
