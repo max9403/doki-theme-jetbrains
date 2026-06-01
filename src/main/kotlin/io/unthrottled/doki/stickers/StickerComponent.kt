@@ -17,7 +17,6 @@ class StickerComponent :
   private val connection = ApplicationManager.getApplication().messageBus.connect()
 
   init {
-    StickerPaneService.instance.init()
     initializeTheme()
     connection.subscribe(LafManagerListener.TOPIC, this)
   }
@@ -76,8 +75,5 @@ class StickerComponent :
       }) {
         remove()
       }
-  }
-
-  fun init() {
   }
 }

@@ -8,14 +8,12 @@ import io.unthrottled.doki.stickers.StickerComponent
 
 class ApplicationLifecycleListener : AppLifecycleListener, DumbAware {
   companion object {
-    init {
-      HackComponent.init()
-    }
+    init { HackComponent }
   }
 
   override fun appFrameCreated(commandLineArgs: MutableList<String>) {
-    TheDokiTheme.instance.init()
-    StickerComponent.instance.init()
+    TheDokiTheme.instance
+    StickerComponent.instance
   }
 
   override fun appClosing() {

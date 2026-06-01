@@ -12,35 +12,27 @@ import io.unthrottled.doki.notification.UpdateNotification
 import io.unthrottled.doki.promotions.MessageBundle
 import io.unthrottled.doki.service.DOKI_ICONS_PLUGIN_ID
 import io.unthrottled.doki.service.PluginService
-import io.unthrottled.doki.settings.actors.ThemeActor.setDokiTheme
-import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.BalloonPosition
-import io.unthrottled.doki.util.toOptional
 
 object LegacyMigration {
   fun migrateIfNecessary() {
+    clearMaterialIconsFlags()
   }
 
   fun newVersionMigration(project: Project) {
-    handleThemeRenames()
-    migrateMaterialIcons(project)
+    if (PluginService.areIconsInstalled().not()) {
+      ApplicationManager.getApplication().invokeLater {
+        showMaterialMigrationMessage(project)
+      }
+    }
   }
 
-  private fun migrateMaterialIcons(project: Project) {
-    if (
-      ThemeConfig.instance.isMaterialFiles ||
-      ThemeConfig.instance.isMaterialDirectories ||
-      ThemeConfig.instance.isMaterialPSIIcons
-    ) {
-      ThemeConfig.instance.isMaterialFiles = false
-      ThemeConfig.instance.isMaterialDirectories = false
-      ThemeConfig.instance.isMaterialPSIIcons = false
-
-    if (PluginService.areIconsInstalled().not()) {
-       ApplicationManager.getApplication().invokeLater {
-         showMaterialMigrationMessage(project)
-       }
-     }
+  private fun clearMaterialIconsFlags() {
+    val config = ThemeConfig.instance
+    if (config.isMaterialFiles || config.isMaterialDirectories || config.isMaterialPSIIcons) {
+      config.isMaterialFiles = false
+      config.isMaterialDirectories = false
+      config.isMaterialPSIIcons = false
     }
   }
 
@@ -53,9 +45,7 @@ object LegacyMigration {
         ) {
           installAndEnable(
             project,
-            setOf(
-              PluginId.getId(DOKI_ICONS_PLUGIN_ID),
-            ),
+            setOf(PluginId.getId(DOKI_ICONS_PLUGIN_ID)),
           ) {
           }
           notification.expire()
@@ -69,30 +59,5 @@ object LegacyMigration {
       balloonPosition = BalloonPosition.LEFT,
       project = project,
     )
-  }
-
-  private val renamedThemes =
-    setOf(
-      // Zero Two Light
-      "4fd5cb34-d36e-4a3c-8639-052b19b26ba1",
-      // Zero Two Dark
-      "8c99ec4b-fda0-4ab7-95ad-a6bf80c3924b",
-      // Rimiru -> Rimuru
-      "5ca2846d-31a9-40b3-8908-965dad3c127d",
-    )
-
-  private fun handleThemeRenames() {
-    ThemeManager.instance.currentTheme
-      .filter {
-        renamedThemes.contains(it.id)
-      }
-      .ifPresent { renamedTheme ->
-        setDokiTheme(
-          ThemeManager.instance.allThemes.first {
-            renamedTheme.id != it.id
-          }.toOptional(),
-        )
-        setDokiTheme(renamedTheme.toOptional())
-      }
-  }
+ }
 }

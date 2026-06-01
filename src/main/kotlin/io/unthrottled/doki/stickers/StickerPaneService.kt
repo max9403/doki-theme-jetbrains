@@ -56,8 +56,6 @@ class StickerPaneService {
     )
   }
 
-  fun init() {}
-
   fun resetMargins() {
     MarginService.instance.reset()
     windowsToAddStickersTo.forEach {

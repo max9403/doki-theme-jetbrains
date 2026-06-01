@@ -71,7 +71,7 @@ class ThemeConfig : BaseState(), PersistentStateComponent<ThemeConfig>, Cloneabl
     set(value) { _stickerLevel.setValue(this, value) }
 
   private val _currentStickerName = string(CurrentSticker.DEFAULT.name)
-  private var currentStickerName: String
+  internal var currentStickerName: String
     get() = _currentStickerName.getValue(this) ?: CurrentSticker.DEFAULT.name
     set(value) { _currentStickerName.setValue(this, value) }
 

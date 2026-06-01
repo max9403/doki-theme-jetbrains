@@ -35,10 +35,9 @@ repositories {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-  implementation("commons-io:commons-io:2.15.1")
-  implementation("org.javassist:javassist:3.29.2-GA")
-  implementation("io.sentry:sentry:6.28.0")
-  testImplementation("org.assertj:assertj-core:3.25.3")
+  implementation("commons-io:commons-io:2.22.0")
+  implementation("org.javassist:javassist:3.31.0-GA")
+  testImplementation("org.assertj:assertj-core:3.27.7")
   testImplementation("io.mockk:mockk:1.13.8")
   testImplementation(libs.junit)
   testImplementation(libs.opentest4j)
@@ -59,13 +58,7 @@ dependencies {
   }
 }
 
-configurations {
-  implementation.configure {
-    // sentry brings in a slf4j that breaks when
-    // with the platform slf4j
-    exclude("org.slf4j")
-  }
-}
+
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
 intellijPlatform {

@@ -9,12 +9,10 @@ import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.IdeFrame
 import io.unthrottled.doki.config.ThemeConfig
-import io.unthrottled.doki.hax.HackComponent.hackLAF
 import io.unthrottled.doki.hax.SvgLoaderHacker.setSVGColorPatcher
 import io.unthrottled.doki.icon.IconPathReplacementComponent
 import io.unthrottled.doki.laf.LookAndFeelInstaller
 import io.unthrottled.doki.laf.LookAndFeelInstaller.installAllUIComponents
-import io.unthrottled.doki.legacy.EXPUIFixer
 import io.unthrottled.doki.legacy.LegacyMigration
 import io.unthrottled.doki.notification.UpdateNotification
 import io.unthrottled.doki.promotions.PromotionManager
@@ -56,10 +54,8 @@ class TheDokiTheme : Disposable {
 
   init {
     PromotionManager.init()
-    hackLAF()
     LegacyMigration.migrateIfNecessary()
     IconPathReplacementComponent.initialize()
-    EXPUIFixer.fixExperimentalUI()
     installAllUIComponents()
     applyFonts()
 
@@ -98,7 +94,6 @@ class TheDokiTheme : Disposable {
   }
 
   fun projectOpened(project: Project) {
-    EXPUIFixer.fixExperimentalUI()
     ThemeManager.instance.currentTheme
       .ifPresent {
         EditorBackgroundWallpaperService.instance.checkForUpdates(it)
@@ -152,6 +147,4 @@ class TheDokiTheme : Disposable {
     UpdateNotificationUpdater.dispose()
   }
 
-  fun init() {
-  }
-}
+ }
