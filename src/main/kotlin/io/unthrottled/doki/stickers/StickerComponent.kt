@@ -17,6 +17,7 @@ class StickerComponent :
   private val connection = ApplicationManager.getApplication().messageBus.connect()
 
   init {
+    StickerPaneService.instance.init()
     initializeTheme()
     connection.subscribe(LafManagerListener.TOPIC, this)
   }
@@ -66,6 +67,9 @@ class StickerComponent :
 
   override fun dispose() {
     connection.dispose()
+  }
+
+  fun init() {
   }
 
   private fun processLaf(currentLaf: UIThemeLookAndFeelInfo) {

@@ -15,7 +15,7 @@ import io.unthrottled.doki.util.toOptional
 import java.awt.AWTEvent
 import java.awt.Toolkit
 import java.awt.event.WindowEvent
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.swing.JFrame
 
@@ -55,6 +55,8 @@ class StickerPaneService {
       AWTEvent.WINDOW_EVENT_MASK,
     )
   }
+
+  fun init() {}
 
   fun resetMargins() {
     MarginService.instance.reset()

@@ -25,6 +25,8 @@
   <depends config-file="io.unthrottled.doki.theme-XPathView.xml" optional="true">
     XPathView  </depends>
   <extensions defaultExtensionNs="com.intellij">
+    <languageBundle locale="en">
+    </languageBundle>
     <applicationService serviceImplementation="io.unthrottled.doki.TheDokiTheme">
     </applicationService>
     <applicationService serviceImplementation="io.unthrottled.doki.stickers.StickerComponent">

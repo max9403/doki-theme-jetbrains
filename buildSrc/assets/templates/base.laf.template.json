@@ -39,6 +39,7 @@
         "background": "headerColor",
         "hoverBackground": "highlightColor",
         "selectedBackground": "highlightColor",
+        "underlinedTabBackground": "highlightColor",
         "inactiveUnderlineColor": "accentColor",
         "underlineColor": "accentColor"
       },
@@ -55,6 +56,7 @@
     "OptionPane.background": "headerColor",
     "OptionPane.messageAreaBorder": "borderColor",
     "Dialog.background": "headerColor",
+    "AlertDialog.background": "baseBackground",
     "activeCaption": "highlightColor",
     "inactiveCaption": "baseBackground",
     "WindowsDialogHeader.background": "headerColor",
@@ -287,7 +289,7 @@
     "Popup.innerBorderColor": "borderColor",
     "Popup.separatorColor": "borderColor",
     "Popup.Toolbar.borderColor": "borderColor",
-    "PopupMenu.background": "borderColor",
+    "PopupMenu.background": "headerColor",
     "SearchEverywhere.SearchField.borderColor": "borderColor",
     "Slider.buttonBorderColor": "borderColor",
     "Slider.tickColor": "borderColor",
@@ -310,6 +312,7 @@
     "ProgressBar.trackColor": "accentColorMoreTransparent",
 
     "EditorTabs.underlinedTabBackground": "highlightColor",
+    "DefaultTabs.underlinedTabBackground": "highlightColor",
 
     "PasswordField.inactiveBackground": "selectionInactive",
 
@@ -339,6 +342,7 @@
     "FormattedTextField.selectionBackground": "selectionBackground",
     "List.selectionBackground":  "selectionBackground",
     "MenuBar.selectionBackground": "selectionBackground",
+    "MainMenu.selectionBackground": "selectionBackground",
     "MenuItem.selectionBackground":  "selectionBackground",
     "PasswordField.selectionBackground": "selectionBackground",
     "Plugins.lightSelectionBackground": "selectionBackground",
@@ -394,6 +398,10 @@
     "SegmentedButton.selectedEndBorderColor": "iconAccentCompliment",
     "Button.focusedBorderColor": "baseBackground",
     "Button.arc": 2,
+
+    "DisclosureButton.defaultBackground": "buttonColor",
+    "DisclosureButton.hoverOverlay": "highlightColor",
+    "DisclosureButton.pressedOverlay": "highlightColor",
 
     "Component.arc": 2,
 
@@ -452,6 +460,7 @@
     "RunWidget.separatorColor": "headerColor",
     "RunWidget.runningBackground": "breakpointActiveColor",
     "RunWidget.StopButton.background": "diff.conflict",
+    "RunWidget.stopBackground": "diff.conflict",
     "RunWidget.StopButton.leftHoverBackground": "fileRed",
     "RunWidget.StopButton.leftPressedBackground": "diff.conflict",
     "RunWidget.hoverBackground": "highlightColor",
@@ -596,7 +605,7 @@
     "TabbedPane.underlineColor":"accentColor",
     "Table.dropLineColor": "accentColor",
     "Tree.selectionBorderColor": "accentColor",
-    "TabbedPaned.borderHighlightColor": "accentColor",
+    "TabbedPane.borderHighlightColor": "accentColor",
     "TextArea.caretForeground": "accentColor",
     "TextField.caretForeground":"accentColor",
     "InplaceRefactoringPopup.borderColor": "accentColor",
@@ -732,9 +741,18 @@
     "Component.background": "headerColor",
     "Island": {
       "background": "headerColor",
-      "borderColor": "borderColor"
+      "borderColor": "headerColor",
+      "arc": 20,
+      "arc.compact": 16,
+      "borderWidth": 5,
+      "borderWidth.compact": 4,
+      "inactiveAlpha": 0.44
     },
     "MainWindow.background": "baseBackground",
+    "MainWindow.Tab.background": "headerColor",
+    "MainWindow.Tab.hoverBackground": "selectionInactive",
+    "MainWindow.Tab.selectedBackground": "highlightColor",
+    "MainWindow.Tab.selectedInactiveBackground": "selectionInactive",
 
     "StatusBar.Breadcrumbs.hoverBackground": "selectionInactive",
     "StatusBar.Breadcrumbs.selectionBackground": "highlightColor",

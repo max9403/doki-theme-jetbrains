@@ -2,10 +2,8 @@ package io.unthrottled.doki.settings
 
 import com.intellij.icons.AllIcons
 import com.intellij.ide.BrowserUtil
-import com.intellij.ide.DataManager
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.options.SearchableConfigurable
-import com.intellij.openapi.options.ex.Settings
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogWrapper
@@ -15,9 +13,9 @@ import com.intellij.ui.dsl.builder.AlignY
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.FontInfo
 import com.intellij.util.ui.UIUtil
-import io.unthrottled.doki.icon.DokiIcons
 import io.unthrottled.doki.promotions.MessageBundle
-import io.unthrottled.doki.service.PluginService
+import io.unthrottled.doki.settings.actors.BackgroundActor
+import io.unthrottled.doki.settings.actors.EmptyFrameBackgroundActor
 import io.unthrottled.doki.settings.actors.ThemeActor
 import io.unthrottled.doki.stickers.CurrentSticker
 import io.unthrottled.doki.stickers.StickerPaneService
@@ -280,11 +278,17 @@ class ThemeSettingsUI : SearchableConfigurable, DumbAware {
       row {
         checkBox(MessageBundle.message("settings.general.weeb.background.editor")).applyToComponent {
           isSelected = initialThemeSettingsModel.isDokiBackground
-          addActionListener { themeSettingsModel.isDokiBackground = isSelected }
+          addActionListener {
+            themeSettingsModel.isDokiBackground = isSelected
+            BackgroundActor.handleBackgroundUpdate(isSelected)
+          }
         }
         checkBox(MessageBundle.message("settings.general.weeb.background.frame")).applyToComponent {
           isSelected = initialThemeSettingsModel.isEmptyFrameBackground
-          addActionListener { themeSettingsModel.isEmptyFrameBackground = isSelected }
+          addActionListener {
+            themeSettingsModel.isEmptyFrameBackground = isSelected
+            EmptyFrameBackgroundActor.handleBackgroundUpdate(isSelected)
+          }
         }
       }
       row {

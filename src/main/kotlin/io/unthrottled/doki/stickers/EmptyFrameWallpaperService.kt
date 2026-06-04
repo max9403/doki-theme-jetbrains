@@ -10,7 +10,7 @@ import io.unthrottled.doki.themes.Background
 import io.unthrottled.doki.themes.DokiTheme
 import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.doOrElse
-import java.util.Optional
+import java.util.*
 
 class EmptyFrameWallpaperService {
   companion object {
@@ -60,7 +60,7 @@ class EmptyFrameWallpaperService {
       .flatMap { background ->
         AssetManager.resolveAssetUrl(
           AssetCategory.BACKGROUNDS,
-          background.name,
+          "wallpapers/${background.name}",
         ).map { it to background }
       }
 

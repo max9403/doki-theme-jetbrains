@@ -13,9 +13,10 @@ import io.unthrottled.doki.themes.DokiTheme
 import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.doOrElse
 import io.unthrottled.doki.util.toOptional
-import java.util.Optional
+import java.util.*
 
 const val DOKI_BACKGROUND_PROP: String = "io.unthrottled.doki.background"
+
 private const val PREVIOUS_BACKGROUND = "io.unthrottled.doki.previous-background"
 
 @Suppress("TooManyFunctions") // cuz I said so

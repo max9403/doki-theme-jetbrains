@@ -27,8 +27,7 @@ import io.unthrottled.doki.stickers.StickerPaneService
 import io.unthrottled.doki.themes.ThemeManager
 import io.unthrottled.doki.util.doOrElse
 import io.unthrottled.doki.util.toOptional
-import java.util.Optional
-import java.util.UUID
+import java.util.*
 
 class TheDokiTheme : Disposable {
   companion object {
@@ -147,4 +146,6 @@ class TheDokiTheme : Disposable {
     UpdateNotificationUpdater.dispose()
   }
 
- }
+  fun init() {
+  }
+}

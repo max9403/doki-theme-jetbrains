@@ -9,7 +9,6 @@ import io.unthrottled.doki.util.runSafely
 import javassist.CannotCompileException
 import javassist.ClassClassPath
 import javassist.ClassPool
-import javassist.CtClass
 import javassist.expr.ExprEditor
 import javassist.expr.MethodCall
 import javassist.expr.NewExpr
@@ -18,9 +17,68 @@ object HackComponent : Disposable {
   private val log = Logger.getInstance(javaClass)
 
   init {
-    enableDisposableBackground()
+    log.info("HackComponent initializing...")
+    hackBackgroundPaintingComponent()
     hackReformatHintInfoForeground()
     hackLiveIndicator()
+    log.info("HackComponent initialized successfully")
+  }
+
+  /**
+   * Patches IDE background color for themed startup,
+   * and makes wallpaper/stickers disposable (scoped to Doki theme property).
+   */
+  private fun hackBackgroundPaintingComponent() {
+    runSafely({
+      val cp = ClassPool(true)
+      cp.insertClassPath(ClassClassPath(EditorComposite::class.java))
+      val ctClass = cp.get("com.intellij.openapi.wm.impl.IdeBackgroundUtil")
+
+      // enable themed startup
+      val backgroundMethod = ctClass.getDeclaredMethod("getIdeBackgroundColor")
+      backgroundMethod.instrument(
+        object : ExprEditor() {
+          override fun edit(e: NewExpr?) {
+            e?.replace($$"{ $_ = com.intellij.util.ui.UIUtil.getPanelBackground(); }")
+          }
+
+          override fun edit(m: MethodCall?) {
+            m?.replace($$"{ $_ = com.intellij.util.ui.UIUtil.getPanelBackground(); }")
+          }
+        },
+      )
+
+      // enable disposable stickers
+      val method = ctClass.getDeclaredMethod("withFrameBackground")
+      method.instrument(
+        object : ExprEditor() {
+          @Throws(CannotCompileException::class)
+          override fun edit(m: MethodCall?) {
+            if (m!!.methodName == "withNamedPainters") {
+              m.replace($$"{ $2 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
+            }
+          }
+        },
+      )
+
+      val initFramePaintersMethod = ctClass.getDeclaredMethod("initFramePainters")
+      initFramePaintersMethod.instrument(
+        object : ExprEditor() {
+          @Throws(CannotCompileException::class)
+          override fun edit(m: MethodCall?) {
+            if (m!!.methodName == "initWallpaperPainter") {
+              m.replace($$"{ $1 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
+            } else if (m.methodName == "getNamedPainters") {
+              m.replace($$"{ $1 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
+            }
+          }
+        },
+      )
+
+      ctClass.toClass()
+    }) {
+      log.warn("Unable to hackBackgroundPaintingComponent for reasons.", it)
+    }
   }
 
   /** Patches file reformat hint to use theme-aware context help foreground. */
@@ -41,12 +99,12 @@ object HackComponent : Disposable {
       )
       ctClass.toClass()
     }) {
-      log.warn("Unable to hackReformatHintInfoForeground for reasons")
+      log.warn("Unable to hackReformatHintInfoForeground for reasons", it)
     }
   }
 
   /** Patches run configuration live indicator to use Doki accent color instead of hardcoded green. */
-    private fun hackLiveIndicator() {
+  private fun hackLiveIndicator() {
     runSafely({
       val cp = ClassPool(true)
       cp.insertClassPath(ClassClassPath(ProcessProxy::class.java))
@@ -64,70 +122,12 @@ object HackComponent : Disposable {
         },
       )
       ctClass.toClass()
-   }) {
-      log.warn("Unable to hackLiveIndicator for reasons.")
-    }
-  }
-
-  private fun enableDisposableBackground() {
-    hackBackgroundPaintingComponent()
-  }
-
-  /**
-   * Enables the ability to use the frame property
-   * but also allows prevents the background image from staying after plugin removal.
-   */
-  private fun hackBackgroundPaintingComponent() {
-    runSafely({
-      val cp = ClassPool(true)
-      cp.insertClassPath(ClassClassPath(EditorComposite::class.java))
-      val ctClass2 = cp.get("com.intellij.openapi.wm.impl.IdeBackgroundUtil")
-
-      // enable themed startup
-      val backgroundMethod = ctClass2.getDeclaredMethod("getIdeBackgroundColor")
-      backgroundMethod.instrument(
-        object : ExprEditor() {
-          override fun edit(e: NewExpr?) {
-            e?.replace($$"{ $_ = com.intellij.util.ui.UIUtil.getPanelBackground(); }")
-          }
-
-          override fun edit(m: MethodCall?) {
-            m?.replace($$"{ $_ = com.intellij.util.ui.UIUtil.getPanelBackground(); }")
-          }
-        },
-      )
-
-      // enable disposable stickers
-      val method = ctClass2.getDeclaredMethod("withFrameBackground")
-      method.instrument(
-        object : ExprEditor() {
-          @Throws(CannotCompileException::class)
-          override fun edit(m: MethodCall?) {
-            if (m!!.methodName == "withNamedPainters") {
-              m.replace($$"{ $2 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
-            }
-          }
-        },
-      )
-
-      val initFramePaintersMethod = ctClass2.getDeclaredMethod("initFramePainters")
-      initFramePaintersMethod.instrument(
-        object : ExprEditor() {
-          @Throws(CannotCompileException::class)
-          override fun edit(m: MethodCall?) {
-            if (m!!.methodName == "initWallpaperPainter") {
-              m.replace($$"{ $1 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
-            } else if (m.methodName == "getNamedPainters") {
-              m.replace($$"{ $1 = \"$$DOKI_BACKGROUND_PROP\"; $_ = $proceed($$); }")
-            }
-          }
-        },
-      )
-
-      ctClass2.toClass()
     }) {
-      log.warn("Unable to hackBackgroundPaintingComponent for reasons.")
+      log.warn("Unable to hackLiveIndicator for reasons.", it)
     }
+  }
+
+  fun init() {
   }
 
   override fun dispose() {
